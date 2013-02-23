@@ -25,9 +25,9 @@ module.exports = function (grunt) {
                 files: ['test/spec/*.coffee'],
                 tasks: ['coffee:test']
             },
-            recess: {
+            less: {
                 files: ['<%%= yeoman.app %>/styles/*.less'],
-                tasks: ['recess']
+                tasks: ['less']
             },
             livereload: {
                 files: [
@@ -122,19 +122,22 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        recess: {
+        less: {
             dist: {
-                src: ['<%%= yeoman.app %>/styles/main.less'],
-                dest: '.tmp/styles/main.css',
                 options: {
-                    compile: true
+                    paths: ["app/components"],
+                    yuicompress: true
+                },
+                files: {
+                    ".tmp/styles/main.less": "<%%= yeoman.app %>/styles/main.less"
                 }
             },
             server: {
-                 src: ['<%%= yeoman.app %>/styles/main.less'],
-                dest: '.tmp/styles/main.css',
                 options: {
-                    compile: true
+                    paths: ["app/components"]
+                },
+                files: {
+                    ".tmp/styles/main.less": "<%%= yeoman.app %>/styles/main.less"
                 }
             }
         },
@@ -256,7 +259,7 @@ module.exports = function (grunt) {
         grunt.task.run([
             'clean:server',
             'coffee:dist',
-            'recess:server',
+            'less:server',
             'livereload-start',
             'connect:livereload',
             'open',
@@ -267,7 +270,7 @@ module.exports = function (grunt) {
     grunt.registerTask('test', [
         'clean:server',
         'coffee',
-        'recess',
+        'less',
         'connect:test',
         'mocha'
     ]);
@@ -275,7 +278,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'coffee',
-        'recess:dist',
+        'less:dist',
         'useminPrepare',<% if (includeRequireJS) { %>
         'requirejs',<% } %>
         'imagemin',
