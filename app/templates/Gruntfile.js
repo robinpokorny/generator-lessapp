@@ -129,7 +129,7 @@ module.exports = function (grunt) {
                     yuicompress: true
                 },
                 files: {
-                    ".tmp/styles/main.less": "<%%= yeoman.app %>/styles/main.less"
+                    ".tmp/styles/main.css": "<%%= yeoman.app %>/styles/main.less"
                 }
             },
             server: {
@@ -137,7 +137,7 @@ module.exports = function (grunt) {
                     paths: ["app/components"]
                 },
                 files: {
-                    ".tmp/styles/main.less": "<%%= yeoman.app %>/styles/main.less"
+                    ".tmp/styles/main.css": "<%%= yeoman.app %>/styles/main.less"
                 }
             }
         },
