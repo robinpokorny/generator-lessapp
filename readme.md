@@ -6,14 +6,14 @@ Edited default Yeoman generator for scaffolding out a front-end web app with Twi
 
 Make sure you have [Yeoman 1.0 beta](http://yeoman.io/) installed, and fully working.
 
-Next step is open up the terminal, and add this repository to the node package manager.
-```bash
-npm install git://github.com/robinpokorny/generator-lessapp.git
-```
-
 Create a directory to contain your project.
 ```bash
 mkdir myapp && cd myapp
+```
+
+Next step is open up the terminal, and add this repository to the node package manager.
+```bash
+npm install git://github.com/robinpokorny/generator-lessapp.git
 ```
 
 And initialize the project
