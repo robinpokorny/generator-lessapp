@@ -13,7 +13,7 @@ mkdir myapp && cd myapp
 
 Next step is open up the terminal, and add this repository to the node package manager.
 ```bash
-npm install git://github.com/robinpokorny/generator-lessapp.git
+npm install generator-lessapp
 ```
 
 And initialize the project
