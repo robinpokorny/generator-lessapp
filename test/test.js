@@ -38,7 +38,7 @@ describe('Webapp generator test', function () {
       'app/index.html',
       'app/scripts/hello.coffee',
       'app/scripts/main.js',
-      'app/styles/main.scss'
+      'app/styles/main.less'
     ];
 
     helpers.mockPrompt(this.webapp, {
@@ -62,11 +62,11 @@ describe('Webapp generator test', function () {
       'app/robots.txt',
       'app/index.html',
       ['app/scripts/main.js', /require\.config/],
-      'app/styles/main.scss'
+      'app/styles/main.less'
     ];
 
     helpers.mockPrompt(this.webapp, {
-      'compassBootstrap': 'Y',
+      'lessBootstrap': 'Y',
       'includeRequireJS': 'Y'
     });
 
