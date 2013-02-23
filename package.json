@@ -1,22 +1,23 @@
 {
-  "name": "generator-webapp",
+  "name": "generator-lessapp",
   "version": "0.1.4",
-  "description": "Default Yeoman generator for scaffolding out a front-end web app",
+  "description": "Edited default Yeoman generator for scaffolding out a front-end web app with Twitter Bootstrap in LESS",
   "keywords": [
     "yeoman-generator",
     "web",
     "app",
     "front-end",
     "h5bp",
-    "modernizr"
+    "modernizr",
+    "less"
   ],
-  "homepage": "https://github.com/yeoman/generator-webapp",
-  "bugs": "https://github.com/yeoman/generator-webapp/issues",
-  "author": "Chrome Developer Relations",
+  "homepage": "https://github.com/robinpokorny/generator-lessapp",
+  "bugs": "https://github.com/robinpokorny/generator-lessapp/issues",
+  "author": "Robin Pokorný",
   "main": "app/index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/yeoman/generator-webapp.git"
+    "url": "git://github.com/robinpokorny/generator-lessapp.git"
   },
   "scripts": {
     "test": "mocha --reporter spec"

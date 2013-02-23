@@ -1,7 +1,30 @@
-# Web app generator [![Build Status](https://secure.travis-ci.org/yeoman/generator-webapp.png?branch=master)](http://travis-ci.org/yeoman/generator-webapp)
+# Web app generator with LESS
 
-Default Yeoman generator for scaffolding out a front-end web app.
+Edited default Yeoman generator for scaffolding out a front-end web app with Twitter Bootstrap in LESS
 
+## Use
+
+Make sure you have [Yeoman 1.0 beta](http://yeoman.io/) installed, and fully working.
+
+Next step is open up the terminal, and add this repository to the node package manager.
+```bash
+npm install git://github.com/robinpokorny/generator-lessapp.git
+```
+
+Create a directory to contain your project.
+```bash
+mkdir myapp && cd myapp
+```
+
+And initialize the project
+```bash
+yo lessapp
+```
+
+After the inilization run `npm install && bower install` to install the required dependencies for your project.
+
+
+(Guide inspired by [nickhartjes/generator-phpwebapp](https://github.com/nickhartjes/generator-phpwebapp/))
 
 ## Contribute
 
