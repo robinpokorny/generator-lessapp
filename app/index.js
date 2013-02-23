@@ -50,8 +50,8 @@ AppGenerator.prototype.askFor = function askFor() {
   console.log('Out of the box I include HTML5 Boilerplate, jQuery and Modernizr.');
 
   var prompts = [{
-    name: 'compassBootstrap',
-    message: 'Would you like to include Twitter Bootstrap for Sass?',
+    name: 'lessBootstrap',
+    message: 'Would you like to include Twitter Bootstrap with LESS?',
     default: 'Y/n',
     warning: 'Yes: All Twitter Bootstrap files will be placed into the styles directory.'
   },
@@ -69,7 +69,7 @@ AppGenerator.prototype.askFor = function askFor() {
 
     // manually deal with the response, get back and store the results.
     // we change a bit this way of doing to automatically do this in the self.prompt() method.
-    this.compassBootstrap = (/y/i).test(props.compassBootstrap);
+    this.lessBootstrap = (/y/i).test(props.lessBootstrap);
     this.includeRequireJS = (/y/i).test(props.includeRequireJS);
 
     cb();
@@ -117,8 +117,8 @@ AppGenerator.prototype.bootstrapJs = function bootstrapJs() {
 };
 
 AppGenerator.prototype.mainStylesheet = function mainStylesheet() {
-  if (this.compassBootstrap) {
-    this.write('app/styles/main.scss', '@import \'sass-bootstrap/lib/bootstrap\';\n\n.hero-unit {\n    margin: 50px auto 0 auto;\n    width: 300px;\n}');
+  if (this.lessBootstrap) {
+    this.write('app/styles/main.less', '@import \'bootstrap/lib/bootstrap\';\n\n.hero-unit {\n    margin: 50px auto 0 auto;\n    width: 300px;\n}');
   } else {
     this.write('app/styles/main.css', 'body {\n    background: #fafafa;\n}\n\n.hero-unit {\n    margin: 50px auto 0 auto;\n    width: 300px;\n}');
   }
@@ -150,22 +150,22 @@ AppGenerator.prototype.writeIndex = function writeIndex() {
     });
   }
 
-  if (this.compassBootstrap && !this.includeRequireJS) {
+  if (this.lessBootstrap && !this.includeRequireJS) {
     // wire Twitter Bootstrap plugins
     this.indexFile = this.appendScripts(this.indexFile, 'scripts/plugins.js', [
-      'components/sass-bootstrap/js/bootstrap-affix.js',
-      'components/sass-bootstrap/js/bootstrap-alert.js',
-      'components/sass-bootstrap/js/bootstrap-dropdown.js',
-      'components/sass-bootstrap/js/bootstrap-tooltip.js',
-      'components/sass-bootstrap/js/bootstrap-modal.js',
-      'components/sass-bootstrap/js/bootstrap-transition.js',
-      'components/sass-bootstrap/js/bootstrap-button.js',
-      'components/sass-bootstrap/js/bootstrap-popover.js',
-      'components/sass-bootstrap/js/bootstrap-typeahead.js',
-      'components/sass-bootstrap/js/bootstrap-carousel.js',
-      'components/sass-bootstrap/js/bootstrap-scrollspy.js',
-      'components/sass-bootstrap/js/bootstrap-collapse.js',
-      'components/sass-bootstrap/js/bootstrap-tab.js'
+      'components/bootstrap/js/bootstrap-affix.js',
+      'components/bootstrap/js/bootstrap-alert.js',
+      'components/bootstrap/js/bootstrap-dropdown.js',
+      'components/bootstrap/js/bootstrap-tooltip.js',
+      'components/bootstrap/js/bootstrap-modal.js',
+      'components/bootstrap/js/bootstrap-transition.js',
+      'components/bootstrap/js/bootstrap-button.js',
+      'components/bootstrap/js/bootstrap-popover.js',
+      'components/bootstrap/js/bootstrap-typeahead.js',
+      'components/bootstrap/js/bootstrap-carousel.js',
+      'components/bootstrap/js/bootstrap-scrollspy.js',
+      'components/bootstrap/js/bootstrap-collapse.js',
+      'components/bootstrap/js/bootstrap-tab.js'
     ]);
   }
 

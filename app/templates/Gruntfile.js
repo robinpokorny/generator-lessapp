@@ -25,9 +25,9 @@ module.exports = function (grunt) {
                 files: ['test/spec/*.coffee'],
                 tasks: ['coffee:test']
             },
-            compass: {
-                files: ['<%%= yeoman.app %>/styles/*.{scss,sass}'],
-                tasks: ['compass']
+            recess: {
+                files: ['<%%= yeoman.app %>/styles/*.less'],
+                tasks: ['recess']
             },
             livereload: {
                 files: [
@@ -122,20 +122,19 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        compass: {
-            options: {
-                sassDir: '<%%= yeoman.app %>/styles',
-                cssDir: '.tmp/styles',
-                imagesDir: '<%%= yeoman.app %>/images',
-                javascriptsDir: '<%%= yeoman.app %>/scripts',
-                fontsDir: '<%%= yeoman.app %>/styles/fonts',
-                importPath: 'app/components',
-                relativeAssets: true
-            },
-            dist: {},
-            server: {
+        recess: {
+            dist: {
+                src: ['<%%= yeoman.app %>/styles/main.less'],
+                dest: '.tmp/styles/main.css',
                 options: {
-                    debugInfo: true
+                    compile: true
+                }
+            },
+            server: {
+                 src: ['<%%= yeoman.app %>/styles/main.less'],
+                dest: '.tmp/styles/main.css',
+                options: {
+                    compile: true
                 }
             }
         },
@@ -257,7 +256,7 @@ module.exports = function (grunt) {
         grunt.task.run([
             'clean:server',
             'coffee:dist',
-            'compass:server',
+            'recess:server',
             'livereload-start',
             'connect:livereload',
             'open',
@@ -268,7 +267,7 @@ module.exports = function (grunt) {
     grunt.registerTask('test', [
         'clean:server',
         'coffee',
-        'compass',
+        'recess',
         'connect:test',
         'mocha'
     ]);
@@ -276,7 +275,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'coffee',
-        'compass:dist',
+        'recess:dist',
         'useminPrepare',<% if (includeRequireJS) { %>
         'requirejs',<% } %>
         'imagemin',
