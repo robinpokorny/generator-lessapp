@@ -27,6 +27,8 @@ function AppGenerator(args, options, config) {
   this.on('end', function () {
     console.log('\nI\'m all done. Just run ' + 'npm install && bower install'.bold.yellow + ' to install the required dependencies.');
   });
+
+  this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
 }
 
 util.inherits(AppGenerator, yeoman.generators.NamedBase);
@@ -107,6 +109,14 @@ AppGenerator.prototype.h5bp = function h5bp() {
   this.copy('404.html', 'app/404.html');
   this.copy('robots.txt', 'app/robots.txt');
   this.copy('htaccess', 'app/.htaccess');
+};
+
+AppGenerator.prototype.bootstrapImg = function bootstrapImg() {
+  // Not used in Bootstrap in LESS. Will be seen in 3.0.
+  /*if (this.compassBootstrap) {
+    this.copy('glyphicons-halflings.png', 'app/images/glyphicons-halflings.png');
+    this.copy('glyphicons-halflings-white.png', 'app/images/glyphicons-halflings-white.png');
+  }*/
 };
 
 AppGenerator.prototype.bootstrapJs = function bootstrapJs() {
