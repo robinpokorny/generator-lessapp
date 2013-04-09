@@ -1,12 +1,11 @@
 'use strict';
 var util = require('util');
 var path = require('path');
+var spawn = require('child_process').spawn;
 var yeoman = require('yeoman-generator');
 
 
-module.exports = AppGenerator;
-
-function AppGenerator(args, options, config) {
+var AppGenerator = module.exports = function Appgenerator(args, options, config) {
   yeoman.generators.Base.apply(this, arguments);
 
   // setup the test-framework property, Gruntfile template will need this
@@ -25,11 +24,17 @@ function AppGenerator(args, options, config) {
   this.mainCoffeeFile = 'console.log "\'Allo from CoffeeScript!"';
 
   this.on('end', function () {
-    console.log('\nI\'m all done. Just run ' + 'npm install && bower install'.bold.yellow + ' to install the required dependencies.');
+    if (options['skip-install']) {
+      console.log('\n\nI\'m all done. Just run ' + 'npm install & bower install --dev'.bold.yellow + ' to install the required dependencies.\n\n');
+    } else {
+      console.log('\n\nI\'m all done. Running ' + 'npm install & bower install'.bold.yellow + ' for you to install the required dependencies. If this fails, try running the command yourself.\n\n');
+      spawn('npm', ['install'], { stdio: 'inherit' });
+      spawn('bower', ['install'], { stdio: 'inherit' });
+    }
   });
 
   this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
-}
+};
 
 util.inherits(AppGenerator, yeoman.generators.NamedBase);
 

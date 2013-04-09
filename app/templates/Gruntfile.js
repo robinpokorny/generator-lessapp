@@ -41,7 +41,7 @@ module.exports = function (grunt) {
                     '<%%= yeoman.app %>/*.html',
                     '{.tmp,<%%= yeoman.app %>}/styles/{,*/}*.css',
                     '{.tmp,<%%= yeoman.app %>}/scripts/{,*/}*.js',
-                    '<%%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}'
+                    '<%%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ],
                 tasks: ['livereload']
             }
@@ -281,6 +281,23 @@ module.exports = function (grunt) {
                     ]
                 }]
             }
+        },
+        concurrent: {
+            server: [
+                'coffee:dist',
+                'less:server'
+            ],
+            test: [
+                'coffee',
+                'less'
+            ],
+            dist: [
+                'coffee',
+                'less:dist',
+                'imagemin',
+                'svgmin',
+                'htmlmin'
+            ]
         }<% if (includeRequireJS) { %>,
         bower: {
             options: {
@@ -301,8 +318,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'clean:server',
-            'coffee:dist',
-            'less:server',
+            'concurrent:server',
             'livereload-start',
             'connect:livereload',
             'open',
@@ -312,23 +328,18 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'clean:server',
-        'coffee',
-        'less',
+        'concurrent:test',
         'connect:test',
         'mocha'
     ]);
 
     grunt.registerTask('build', [
         'clean:dist',
-        'coffee',
-        'less:dist',
-        'useminPrepare',<% if (includeRequireJS) { %>
+        'useminPrepare',
+        'concurrent:dist',<% if (includeRequireJS) { %>
         'requirejs',<% } %>
-        'imagemin',
-        'svgmin',
-        'htmlmin',
-        'concat',
         'cssmin',
+        'concat',
         'uglify',
         'copy',
         'rev',
