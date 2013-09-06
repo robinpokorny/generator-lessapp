@@ -6,13 +6,13 @@ Edited default Yeoman generator for scaffolding out a front-end web app with Twi
 
 * CSS Autoprefixing (new)
 * Built-in preview server with LiveReload
-* Automagically compile CoffeeScript & Compass
+* Automagically compile CoffeeScript & LESS
 * Automagically lint your scripts
 * Automagically wire up your Bower components. Supported both [with](https://github.com/yeoman/grunt-bower-requirejs) and [without](https://github.com/stephenplusplus/grunt-bower-install) (new) RequireJS.
 * Awesome Image Optimization (via OptiPNG, pngquant, jpegtran and gifsicle)
 * Mocha Unit Testing with PhantomJS
 * Optional - RequireJS
-* Optional - Twitter Bootstrap for SASS
+* Optional - Twitter Bootstrap 3 (in LESS)
 * Optional - Leaner Modernizr builds (new)
 
 For more information on what `generator-webapp` can do for you, take a look at the [Grunt tasks](https://github.com/yeoman/generator-webapp/blob/master/app/templates/_package.json) used in our `package.json`.
