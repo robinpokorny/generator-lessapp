@@ -1,19 +1,17 @@
 // Generated on <%= (new Date).toISOString().split('T')[0] %> using <%= pkg.name %> <%= pkg.version %>
 'use strict';
-var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
-var mountFolder = function (connect, dir) {
-    return connect.static(require('path').resolve(dir));
-};
 
 // # Globbing
 // for performance reasons we're only matching one level down:
 // 'test/spec/{,*/}*.js'
-// use this if you want to match all subfolders:
+// use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
 
 module.exports = function (grunt) {
+    // show elapsed time at the end
+    require('time-grunt')(grunt);
     // load all grunt tasks
-    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+    require('load-grunt-tasks')(grunt);
 
     // configurable paths
     var yeomanConfig = {
@@ -33,59 +31,55 @@ module.exports = function (grunt) {
                 tasks: ['coffee:test']
             },
             less: {
-                files: ['<%%= yeoman.app %>/styles/*.less'],
-                tasks: ['less']
+                files: ['<%%= yeoman.app %>/styles/{,*/}*.less'],
+                tasks: ['less:server', 'autoprefixer']
+            },
+            styles: {
+                files: ['<%%= yeoman.app %>/styles/{,*/}*.css'],
+                tasks: ['copy:styles', 'autoprefixer']
             },
             livereload: {
+                options: {
+                    livereload: '<%%= connect.options.livereload %>'
+                },
                 files: [
                     '<%%= yeoman.app %>/*.html',
-                    '{.tmp,<%%= yeoman.app %>}/styles/{,*/}*.css',
+                    '.tmp/styles/{,*/}*.css',
                     '{.tmp,<%%= yeoman.app %>}/scripts/{,*/}*.js',
                     '<%%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-                ],
-                tasks: ['livereload']
+                ]
             }
         },
         connect: {
             options: {
                 port: 9000,
+                livereload: 35729,
                 // change this to '0.0.0.0' to access the server from outside
                 hostname: 'localhost'
             },
             livereload: {
                 options: {
-                    middleware: function (connect) {
-                        return [
-                            lrSnippet,
-                            mountFolder(connect, '.tmp'),
-                            mountFolder(connect, 'app')
-                        ];
-                    }
+                    open: true,
+                    base: [
+                        '.tmp',
+                        yeomanConfig.app
+                    ]
                 }
             },
             test: {
                 options: {
-                    middleware: function (connect) {
-                        return [
-                            mountFolder(connect, '.tmp'),
-                            mountFolder(connect, 'test')
-                        ];
-                    }
+                    base: [
+                        '.tmp',
+                        'test',
+                        yeomanConfig.app,
+                    ]
                 }
             },
             dist: {
                 options: {
-                    middleware: function (connect) {
-                        return [
-                            mountFolder(connect, 'dist')
-                        ];
-                    }
+                    open: true,
+                    base: yeomanConfig.dist
                 }
-            }
-        },
-        open: {
-            server: {
-                path: 'http://localhost:<%%= connect.options.port %>'
             }
         },
         clean: {
@@ -116,13 +110,12 @@ module.exports = function (grunt) {
             all: {
                 options: {
                     run: true,
-                    urls: ['http://localhost:<%%= connect.options.port %>/index.html']
+                    urls: ['http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/index.html']
                 }
             }
         },<% } else if (testFramework === 'jasmine') { %>
         jasmine: {
             all: {
-                /*src: '',*/
                 options: {
                     specs: 'test/spec/{,*/}*.js'
                 }
@@ -149,22 +142,38 @@ module.exports = function (grunt) {
             }
         },
         less: {
+            options: {
+                paths: ['<%%= yeoman.app %>/bower_components'],
+            },
             dist: {
                 options: {
-                    paths: ["<%= yeoman.app %>/styles","app/components"],
-                    yuicompress: true
+                    yuicompress: true,
+                    report: 'gzip'
                 },
                 files: {
-                    ".tmp/styles/main.css": "<%%= yeoman.app %>/styles/main.less"
+                    '.tmp/styles/main.css': '<%%= yeoman.app %>/styles/main.less'
                 }
             },
             server: {
                 options: {
-                    paths: ["<%= yeoman.app %>/styles","app/components"]
+                    dumpLineNumbers: 'all'
                 },
                 files: {
-                    ".tmp/styles/main.css": "<%%= yeoman.app %>/styles/main.less"
+                    '.tmp/styles/main.css': '<%%= yeoman.app %>/styles/main.less'
                 }
+            }
+        },
+        autoprefixer: {
+            options: {
+                browsers: ['last 1 version']
+            },
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '.tmp/styles/',
+                    src: '{,*/}*.css',
+                    dest: '.tmp/styles/'
+                }]
             }
         },
         // not used since Uglify task does concat,
@@ -177,7 +186,7 @@ module.exports = function (grunt) {
                 // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
                 options: {
                     // `name` and `out` is set by grunt-usemin
-                    baseUrl: 'app/scripts',
+                    baseUrl: yeomanConfig.app + '/scripts',
                     optimize: 'none',
                     // TODO: Figure out how to make sourcemaps work with grunt-usemin
                     // https://github.com/yeoman/grunt-usemin/issues/30
@@ -186,11 +195,17 @@ module.exports = function (grunt) {
                     // http://requirejs.org/docs/errors.html#sourcemapcomments
                     preserveLicenseComments: false,
                     useStrict: true,
-                    wrap: true,
+                    wrap: true
                     //uglify2: {} // https://github.com/mishoo/UglifyJS2
                 }
             }
         },<% } else { %>
+        'bower-install': {
+            app: {
+                html: '<%%= yeoman.app %>/index.html',
+                ignorePath: '<%%= yeoman.app %>/'
+            }
+        },
         // not enabled since usemin task does concat and uglify
         // check index.html to edit your build targets
         // enable this task if you prefer defining your build targets here
@@ -204,23 +219,23 @@ module.exports = function (grunt) {
                         '<%%= yeoman.dist %>/scripts/{,*/}*.js',
                         '<%%= yeoman.dist %>/styles/{,*/}*.css',
                         '<%%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
-                        '<%%= yeoman.dist %>/styles/fonts/*'
+                        '<%%= yeoman.dist %>/styles/fonts/{,*/}*.*'
                     ]
                 }
             }
         },
         useminPrepare: {
-            html: '<%%= yeoman.app %>/index.html',
             options: {
                 dest: '<%%= yeoman.dist %>'
-            }
+            },
+            html: '<%%= yeoman.app %>/index.html'
         },
         usemin: {
-            html: ['<%%= yeoman.dist %>/{,*/}*.html'],
-            css: ['<%%= yeoman.dist %>/styles/{,*/}*.css'],
             options: {
                 dirs: ['<%%= yeoman.dist %>']
-            }
+            },
+            html: ['<%%= yeoman.dist %>/{,*/}*.html'],
+            css: ['<%%= yeoman.dist %>/styles/{,*/}*.css']
         },
         imagemin: {
             dist: {
@@ -243,14 +258,20 @@ module.exports = function (grunt) {
             }
         },
         cssmin: {
-            dist: {
-                files: {
-                    '<%%= yeoman.dist %>/styles/main.css': [
-                        '.tmp/styles/{,*/}*.css',
-                        '<%%= yeoman.app %>/styles/{,*/}*.css'
-                    ]
-                }
-            }
+            // This task is pre-configured if you do not wish to use Usemin
+            // blocks for your CSS. By default, the Usemin block from your
+            // `index.html` will take care of minification, e.g.
+            //
+            //     <!-- build:css({.tmp,app}) styles/main.css -->
+            //
+            // dist: {
+            //     files: {
+            //         '<%%= yeoman.dist %>/styles/main.css': [
+            //             '.tmp/styles/{,*/}*.css',
+            //             '<%%= yeoman.app %>/styles/{,*/}*.css'
+            //         ]
+            //     }
+            // }
         },
         htmlmin: {
             dist: {
@@ -282,26 +303,45 @@ module.exports = function (grunt) {
                     cwd: '<%%= yeoman.app %>',
                     dest: '<%%= yeoman.dist %>',
                     src: [
-                        '*.{ico,txt}',
+                        '*.{ico,png,txt}',
                         '.htaccess',
                         'images/{,*/}*.{webp,gif}',
-                        'styles/fonts/*'
+                        'styles/fonts/{,*/}*.*'
                     ]
                 }]
+            },
+            styles: {
+                expand: true,
+                dot: true,
+                cwd: '<%%= yeoman.app %>/styles',
+                dest: '.tmp/styles/',
+                src: '{,*/}*.css'
             }
-        },
+        },<% if (includeModernizr) { %>
+        modernizr: {
+            devFile: '<%%= yeoman.app %>/bower_components/modernizr/modernizr.js',
+            outputFile: '<%%= yeoman.dist %>/bower_components/modernizr/modernizr.js',
+            files: [
+                '<%%= yeoman.dist %>/scripts/{,*/}*.js',
+                '<%%= yeoman.dist %>/styles/{,*/}*.css',
+                '!<%%= yeoman.dist %>/scripts/vendor/*'
+            ],
+            uglify: true
+        },<% } %>
         concurrent: {
             server: [
+                'less',
                 'coffee:dist',
-                'less:server'
+                'copy:styles'
             ],
             test: [
                 'coffee',
-                'less'
+                'copy:styles'
             ],
             dist: [
                 'coffee',
-                'less:dist',
+                'less',
+                'copy:styles',
                 'imagemin',
                 'svgmin',
                 'htmlmin'
@@ -317,19 +357,16 @@ module.exports = function (grunt) {
         }<% } %>
     });
 
-    grunt.renameTask('regarde', 'watch');
-
     grunt.registerTask('server', function (target) {
         if (target === 'dist') {
-            return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
+            return grunt.task.run(['build', 'connect:dist:keepalive']);
         }
 
         grunt.task.run([
             'clean:server',
             'concurrent:server',
-            'livereload-start',
+            'autoprefixer',
             'connect:livereload',
-            'open',
             'watch'
         ]);
     });
@@ -337,6 +374,7 @@ module.exports = function (grunt) {
     grunt.registerTask('test', [
         'clean:server',
         'concurrent:test',
+        'autoprefixer',
         'connect:test',<% if (testFramework === 'mocha') { %>
         'mocha'<% } else if (testFramework === 'jasmine') { %>
         'jasmine'<% } %>
@@ -345,12 +383,14 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'useminPrepare',
-        'concurrent:dist',<% if (includeRequireJS) { %>
+        'concurrent:dist',
+        'autoprefixer',<% if (includeRequireJS) { %>
         'requirejs',<% } %>
-        'cssmin',
         'concat',
-        'uglify',
-        'copy',
+        'cssmin',
+        'uglify',<% if (includeModernizr) { %>
+        'modernizr',<% } %>
+        'copy:dist',
         'rev',
         'usemin'
     ]);

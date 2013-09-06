@@ -5,14 +5,14 @@ var helpers = require('yeoman-generator').test;
 var assert  = require('assert');
 
 
-describe('Webapp generator test', function () {
+describe('Lessapp generator test', function () {
   beforeEach(function (done) {
     helpers.testDirectory(path.join(__dirname, 'temp'), function (err) {
       if (err) {
         return done(err);
       }
 
-      this.webapp = helpers.createGenerator('webapp:app', [
+      this.lessapp = helpers.createGenerator('lessapp:app', [
         '../../app', [
           helpers.createDummyGenerator(),
           'mocha:app'
@@ -29,7 +29,7 @@ describe('Webapp generator test', function () {
 
   it('creates expected files in non-AMD mode', function (done) {
     var expected = [
-      ['component.json', /"name": "temp"/],
+      ['bower.json', /"name": "temp"/],
       ['package.json', /"name": "temp"/],
       'Gruntfile.js',
       'app/404.html',
@@ -41,13 +41,12 @@ describe('Webapp generator test', function () {
       'app/styles/main.less'
     ];
 
-    helpers.mockPrompt(this.webapp, {
-      'compassBootstrap': 'Y',
-      'includeRequireJS': 'N'
+    helpers.mockPrompt(this.lessapp, {
+      features: ['lessBootstrap', 'includeRequireJS']
     });
 
-    this.webapp.options['skip-install'] = true;
-    this.webapp.run({}, function () {
+    this.lessapp.options['skip-install'] = true;
+    this.lessapp.run({}, function () {
       helpers.assertFiles(expected);
       done();
     });
@@ -55,7 +54,7 @@ describe('Webapp generator test', function () {
 
   it('creates expected files in AMD mode', function (done) {
     var expected= [
-      ['component.json', /"name": "temp"/],
+      ['bower.json', /"name": "temp"/],
       ['package.json', /"name": "temp"/],
       'Gruntfile.js',
       'app/404.html',
@@ -66,13 +65,12 @@ describe('Webapp generator test', function () {
       'app/styles/main.less'
     ];
 
-    helpers.mockPrompt(this.webapp, {
-      'lessBootstrap': 'Y',
-      'includeRequireJS': 'Y'
+    helpers.mockPrompt(this.lessapp, {
+      features: ['lessBootstrap', 'includeRequireJS']
     });
 
-    this.webapp.options['skip-install'] = true;
-    this.webapp.run({}, function () {
+    this.lessapp.options['skip-install'] = true;
+    this.lessapp.run({}, function () {
       helpers.assertFiles(expected);
       done();
     });
