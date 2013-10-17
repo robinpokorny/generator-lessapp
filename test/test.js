@@ -27,11 +27,11 @@ describe('Lessapp generator test', function () {
     this.app = require('../app');
   });
 
-  it('creates expected files in non-AMD mode', function (done) {
+  it('creates expected files', function (done) {
     var expected = [
       ['bower.json', /"name": "temp"/],
       ['package.json', /"name": "temp"/],
-      'Gruntfile.js',
+      ['Gruntfile.js', /coffee:/],
       'app/404.html',
       'app/favicon.ico',
       'app/robots.txt',
@@ -42,9 +42,35 @@ describe('Lessapp generator test', function () {
     ];
 
     helpers.mockPrompt(this.lessapp, {
-      features: ['lessBootstrap', 'includeRequireJS']
+      features: ['lessBootstrap']
     });
 
+    this.lessapp.coffee = true;
+    this.lessapp.options['skip-install'] = true;
+    this.lessapp.run({}, function () {
+      helpers.assertFiles(expected);
+      done();
+    });
+  });
+
+  it('creates expected files in non-AMD non-coffee mode', function (done) {
+    var expected = [
+      ['bower.json', /"name": "temp"/],
+      ['package.json', /"name": "temp"/],
+      'Gruntfile.js',
+      'app/404.html',
+      'app/favicon.ico',
+      'app/robots.txt',
+      'app/index.html',
+      'app/scripts/main.js',
+      'app/styles/main.less'
+    ];
+
+    helpers.mockPrompt(this.lessapp, {
+      features: ['lessBootstrap']
+    });
+
+    this.lessapp.coffee = false;
     this.lessapp.options['skip-install'] = true;
     this.lessapp.run({}, function () {
       helpers.assertFiles(expected);
@@ -61,12 +87,12 @@ describe('Lessapp generator test', function () {
       'app/favicon.ico',
       'app/robots.txt',
       'app/index.html',
-      ['app/scripts/main.js', /require\.config/],
+      'app/scripts/main.js',
       'app/styles/main.less'
     ];
 
     helpers.mockPrompt(this.lessapp, {
-      features: ['lessBootstrap', 'includeRequireJS']
+      features: ['lessBootstrap']
     });
 
     this.lessapp.options['skip-install'] = true;

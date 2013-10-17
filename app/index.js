@@ -10,6 +10,7 @@ var AppGenerator = module.exports = function Appgenerator(args, options, config)
 
   // setup the test-framework property, Gruntfile template will need this
   this.testFramework = options['test-framework'] || 'mocha';
+  this.coffee = options.coffee;
 
   // for hooks to resolve on mocha by default
   if (!options['test-framework']) {
@@ -51,10 +52,6 @@ AppGenerator.prototype.askFor = function askFor() {
       value: 'lessBootstrap',
       checked: true
     }, {
-      name: 'RequireJS',
-      value: 'includeRequireJS',
-      checked: true
-    }, {
       name: 'Modernizr',
       value: 'includeModernizr',
       checked: true
@@ -69,7 +66,6 @@ AppGenerator.prototype.askFor = function askFor() {
     // manually deal with the response, get back and store the results.
     // we change a bit this way of doing to automatically do this in the self.prompt() method.
     this.lessBootstrap = hasFeature('lessBootstrap');
-    this.includeRequireJS = hasFeature('includeRequireJS');
     this.includeModernizr = hasFeature('includeModernizr');
 
     cb();
@@ -121,12 +117,11 @@ AppGenerator.prototype.writeIndex = function writeIndex() {
 
   this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), 'index.html'));
   this.indexFile = this.engine(this.indexFile, this);
+  this.indexFile = this.appendScripts(this.indexFile, 'scripts/main.js', [
+    'scripts/main.js'
+  ]);
 
-  if (!this.includeRequireJS) {
-    this.indexFile = this.appendScripts(this.indexFile, 'scripts/main.js', [
-      'scripts/main.js'
-    ]);
-
+  if (this.coffee) {
     this.indexFile = this.appendFiles({
       html: this.indexFile,
       fileType: 'js',
@@ -136,7 +131,7 @@ AppGenerator.prototype.writeIndex = function writeIndex() {
     });
   }
 
-  if (this.lessBootstrap && !this.includeRequireJS) {
+  if (this.lessBootstrap) {
     // wire Twitter Bootstrap plugins
     this.indexFile = this.appendScripts(this.indexFile, 'scripts/plugins.js', [
       'bower_components/bootstrap/js/affix.js',
@@ -155,36 +150,16 @@ AppGenerator.prototype.writeIndex = function writeIndex() {
   }
 };
 
-// TODO(mklabs): to be put in a subgenerator like rjs:app
-AppGenerator.prototype.requirejs = function requirejs() {
-  if (!this.includeRequireJS) {
-    return;
-  }
-
-  this.indexFile = this.appendScripts(this.indexFile, 'scripts/main.js', ['bower_components/requirejs/require.js'], {
-    'data-main': 'scripts/main'
-  });
-
-  // add a basic amd module
-  this.write('app/scripts/app.js', [
-    '/*global define */',
-    'define([], function () {',
-    '    \'use strict\';\n',
-    '    return \'\\\'Allo \\\'Allo!\';',
-    '});'
-  ].join('\n'));
-
-  this.template('require_main.js', 'app/scripts/main.js');
-};
-
 AppGenerator.prototype.app = function app() {
   this.mkdir('app');
   this.mkdir('app/scripts');
   this.mkdir('app/styles');
   this.mkdir('app/images');
   this.write('app/index.html', this.indexFile);
-  this.write('app/scripts/hello.coffee', this.mainCoffeeFile);
-  if (!this.includeRequireJS) {
-    this.write('app/scripts/main.js', 'console.log(\'\\\'Allo \\\'Allo!\');');
+
+  if (this.coffee) {
+    this.write('app/scripts/hello.coffee', this.mainCoffeeFile);
   }
+
+  this.write('app/scripts/main.js', 'console.log(\'\\\'Allo \\\'Allo!\');');
 };

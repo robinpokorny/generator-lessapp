@@ -13,15 +13,13 @@ module.exports = function (grunt) {
     // load all grunt tasks
     require('load-grunt-tasks')(grunt);
 
-    // configurable paths
-    var yeomanConfig = {
-        app: 'app',
-        dist: 'dist'
-    };
-
     grunt.initConfig({
-        yeoman: yeomanConfig,
-        watch: {
+        // configurable paths
+        yeoman: {
+            app: 'app',
+            dist: 'dist'
+        },
+        watch: {<% if (coffee) { %>
             coffee: {
                 files: ['<%%= yeoman.app %>/scripts/{,*/}*.coffee'],
                 tasks: ['coffee:dist']
@@ -29,7 +27,7 @@ module.exports = function (grunt) {
             coffeeTest: {
                 files: ['test/spec/{,*/}*.coffee'],
                 tasks: ['coffee:test']
-            },
+            },<% } %>
             less: {
                 files: ['<%%= yeoman.app %>/styles/{,*/}*.less'],
                 tasks: ['less:server', 'autoprefixer']
@@ -62,7 +60,7 @@ module.exports = function (grunt) {
                     open: true,
                     base: [
                         '.tmp',
-                        yeomanConfig.app
+                        '<%%= yeoman.app %>'
                     ]
                 }
             },
@@ -71,14 +69,15 @@ module.exports = function (grunt) {
                     base: [
                         '.tmp',
                         'test',
-                        yeomanConfig.app,
+                        '<%%= yeoman.app %>'
                     ]
                 }
             },
             dist: {
                 options: {
                     open: true,
-                    base: yeomanConfig.dist
+                    base: '<%%= yeoman.dist %>',
+                    livereload: false
                 }
             }
         },
@@ -120,7 +119,7 @@ module.exports = function (grunt) {
                     specs: 'test/spec/{,*/}*.js'
                 }
             }
-        },<% } %>
+        },<% } %><% if (coffee) { %>
         coffee: {
             dist: {
                 files: [{
@@ -140,7 +139,7 @@ module.exports = function (grunt) {
                     ext: '.js'
                 }]
             }
-        },
+        },<% } %>
         less: {
             options: {
                 paths: ['<%%= yeoman.app %>/bower_components'],
@@ -180,38 +179,19 @@ module.exports = function (grunt) {
         // but still available if needed
         /*concat: {
             dist: {}
-        },*/<% if (includeRequireJS) { %>
-        requirejs: {
-            dist: {
-                // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
-                options: {
-                    // `name` and `out` is set by grunt-usemin
-                    baseUrl: yeomanConfig.app + '/scripts',
-                    optimize: 'none',
-                    // TODO: Figure out how to make sourcemaps work with grunt-usemin
-                    // https://github.com/yeoman/grunt-usemin/issues/30
-                    //generateSourceMaps: true,
-                    // required to support SourceMaps
-                    // http://requirejs.org/docs/errors.html#sourcemapcomments
-                    preserveLicenseComments: false,
-                    useStrict: true,
-                    wrap: true
-                    //uglify2: {} // https://github.com/mishoo/UglifyJS2
-                }
-            }
-        },<% } else { %>
+        },*/
+        // not enabled since usemin task does concat and uglify
+        // check index.html to edit your build targets
+        // enable this task if you prefer defining your build targets here
+        /*uglify: {
+            dist: {}
+        },*/
         'bower-install': {
             app: {
                 html: '<%%= yeoman.app %>/index.html',
                 ignorePath: '<%%= yeoman.app %>/'
             }
         },
-        // not enabled since usemin task does concat and uglify
-        // check index.html to edit your build targets
-        // enable this task if you prefer defining your build targets here
-        /*uglify: {
-            dist: {}
-        },*/<% } %>
         rev: {
             dist: {
                 files: {
@@ -232,7 +212,7 @@ module.exports = function (grunt) {
         },
         usemin: {
             options: {
-                dirs: ['<%%= yeoman.dist %>']
+                assetsDirs: ['<%%= yeoman.dist %>']
             },
             html: ['<%%= yeoman.dist %>/{,*/}*.html'],
             css: ['<%%= yeoman.dist %>/styles/{,*/}*.css']
@@ -306,7 +286,8 @@ module.exports = function (grunt) {
                         '*.{ico,png,txt}',
                         '.htaccess',
                         'images/{,*/}*.{webp,gif}',
-                        'styles/fonts/{,*/}*.*'
+                        'styles/fonts/{,*/}*.*'<% if (lessBootstrap) { %>,
+                        'bower_components/bootstrap/fonts/*.*'<% } %>
                     ]
                 }]
             },
@@ -330,31 +311,23 @@ module.exports = function (grunt) {
         },<% } %>
         concurrent: {
             server: [
-                'less:server',
-                'coffee:dist',
+                'less:server',<% if (coffee) { %>
+                'coffee:dist',<% } %>
                 'copy:styles'
             ],
-            test: [
-                'coffee',
+            test: [<% if (coffee) { %>
+                'coffee',<% } %>
                 'copy:styles'
             ],
-            dist: [
-                'coffee',
+            dist: [<% if (coffee) { %>
+                'coffee',<% } %>
                 'less:dist',
                 'copy:styles',
                 'imagemin',
                 'svgmin',
                 'htmlmin'
             ]
-        }<% if (includeRequireJS) { %>,
-        bower: {
-            options: {
-                exclude: ['modernizr']
-            },
-            all: {
-                rjsConfig: '<%%= yeoman.app %>/scripts/main.js'
-            }
-        }<% } %>
+        }
     });
 
     grunt.registerTask('server', function (target) {
@@ -384,8 +357,7 @@ module.exports = function (grunt) {
         'clean:dist',
         'useminPrepare',
         'concurrent:dist',
-        'autoprefixer',<% if (includeRequireJS) { %>
-        'requirejs',<% } %>
+        'autoprefixer',
         'concat',
         'cssmin',
         'uglify',<% if (includeModernizr) { %>

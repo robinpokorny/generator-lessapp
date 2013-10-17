@@ -8,10 +8,9 @@ Edited default Yeoman generator for scaffolding out a front-end web app with Twi
 * Built-in preview server with LiveReload
 * Automagically compile CoffeeScript & LESS
 * Automagically lint your scripts
-* Automagically wire up your Bower components. Supported both [with](https://github.com/yeoman/grunt-bower-requirejs) and [without](https://github.com/stephenplusplus/grunt-bower-install) (new) RequireJS.
+* Automagically wire up your Bower components with [bower-install](https://github.com/stephenplusplus/grunt-bower-install).
 * Awesome Image Optimization (via OptiPNG, pngquant, jpegtran and gifsicle)
 * Mocha Unit Testing with PhantomJS
-* Optional - RequireJS
 * Optional - Twitter Bootstrap 3 (in LESS)
 * Optional - Leaner Modernizr builds (new)
 
@@ -34,6 +33,9 @@ For more information on what `generator-webapp` can do for you, take a look at t
 
   Defaults to `mocha`. Can be switched for another supported testing framework like `jasmine`.
 
+* `--coffee`
+
+  Add support for [CoffeeScript](http://coffeescript.org/).
 
 ## Contribute
 
