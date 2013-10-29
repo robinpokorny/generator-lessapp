@@ -18,10 +18,9 @@ For more information on what `generator-webapp` can do for you, take a look at t
 
 ## Getting Started
 
-- Make sure you have [yo](https://github.com/yeoman/yo) installed: `npm install -g yo`
 - Install: `npm install -g generator-lessapp`
 - Run: `yo lessapp`
-- Run `grunt` for building and `grunt server` for preview
+- Run `grunt` for building and `grunt serve` for preview
 
 ## Options
 
