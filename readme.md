@@ -49,3 +49,5 @@ If not, `generator-webapp` is fork-friendly and you can always maintain a custom
 ## License
 
 [BSD license](http://opensource.org/licenses/bsd-license.php)
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/robinpokorny/generator-lessapp/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
