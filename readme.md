@@ -21,7 +21,10 @@ For more information on what `generator-webapp` can do for you, take a look at t
 - Make sure you have [yo](https://github.com/yeoman/yo) installed: `npm install -g yo`
 - Install: `npm install -g generator-lessapp`
 - Run: `yo lessapp`
-- Run `grunt` for building and `grunt server` for preview
+- Run `grunt` for building and `grunt serve` for preview
+- Install: `npm install -g generator-webapp`
+- Run: `yo webapp`
+- Run `grunt` for building and `grunt serve` for preview
 
 ## Options
 
@@ -29,7 +32,7 @@ For more information on what `generator-webapp` can do for you, take a look at t
 
   Skips the automatic execution of `bower` and `npm` after scaffolding has finished.
 
-* `--test-framework <framework>`
+* `--test-framework=<framework>`
 
   Defaults to `mocha`. Can be switched for another supported testing framework like `jasmine`.
 
