@@ -1,7 +1,7 @@
 {
   "name": "generator-lessapp",
-  "version": "0.4.0",
-  "description": "Edited default Yeoman generator for scaffolding out a front-end web app with Twitter Bootstrap in LESS",
+  "version": "0.4.6",
+  "description": "Scaffold out a LESS front-end web app",
   "keywords": [
     "yeoman-generator",
     "web",

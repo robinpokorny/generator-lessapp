@@ -16,16 +16,17 @@ var AppGenerator = module.exports = function Appgenerator(args, options, config)
   options['test-framework'] = this.testFramework;
 
   // resolved to mocha by default (could be switched to jasmine for instance)
-  this.hookFor('test-framework', { as: 'app' });
-
-  this.mainCoffeeFile = 'console.log "\'Allo from CoffeeScript!"';
-
-  this.on('end', function () {
-    this.installDependencies({
-      skipInstall: options['skip-install'],
-      skipMessage: options['skip-install-message']
-    });
+  this.hookFor('test-framework', {
+    as: 'app',
+    options: {
+      options: {
+        'skip-install': options['skip-install-message'],
+        'skip-message': options['skip-install']
+      }
+    }
   });
+
+  this.options = options;
 
   this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
 };
@@ -104,14 +105,12 @@ AppGenerator.prototype.h5bp = function h5bp() {
 };
 
 AppGenerator.prototype.mainStylesheet = function mainStylesheet() {
-  if (this.lessBootstrap) {
-    this.copy('main.less', 'app/styles/main.less');
-  } else {
-    this.copy('main.css', 'app/styles/main.css');
-  }
+  var css = 'main.' + (this.lessBootstrap ? 'le' : 'c') + 'ss';
+  this.copy(css, 'app/styles/' + css);
 };
 
 AppGenerator.prototype.writeIndex = function writeIndex() {
+  var bs;
 
   this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), 'index.html'));
   this.indexFile = this.engine(this.indexFile, this);
@@ -119,31 +118,22 @@ AppGenerator.prototype.writeIndex = function writeIndex() {
     'scripts/main.js'
   ]);
 
-  if (this.coffee) {
-    this.indexFile = this.appendFiles({
-      html: this.indexFile,
-      fileType: 'js',
-      optimizedPath: 'scripts/coffee.js',
-      sourceFileList: ['scripts/hello.js'],
-      searchPath: '.tmp'
-    });
-  }
-
   if (this.lessBootstrap) {
     // wire Twitter Bootstrap plugins
+    bs = 'bower_components/bootstrap/js/';
     this.indexFile = this.appendScripts(this.indexFile, 'scripts/plugins.js', [
-      'bower_components/bootstrap/js/affix.js',
-      'bower_components/bootstrap/js/alert.js',
-      'bower_components/bootstrap/js/dropdown.js',
-      'bower_components/bootstrap/js/tooltip.js',
-      'bower_components/bootstrap/js/modal.js',
-      'bower_components/bootstrap/js/transition.js',
-      'bower_components/bootstrap/js/button.js',
-      'bower_components/bootstrap/js/popover.js',
-      'bower_components/bootstrap/js/carousel.js',
-      'bower_components/bootstrap/js/scrollspy.js',
-      'bower_components/bootstrap/js/collapse.js',
-      'bower_components/bootstrap/js/tab.js'
+      bs + 'affix.js',
+      bs + 'alert.js',
+      bs + 'dropdown.js',
+      bs + 'tooltip.js',
+      bs + 'modal.js',
+      bs + 'transition.js',
+      bs + 'button.js',
+      bs + 'popover.js',
+      bs + 'carousel.js',
+      bs + 'scrollspy.js',
+      bs + 'collapse.js',
+      bs + 'tab.js'
     ]);
   }
 };
@@ -156,8 +146,25 @@ AppGenerator.prototype.app = function app() {
   this.write('app/index.html', this.indexFile);
 
   if (this.coffee) {
-    this.write('app/scripts/hello.coffee', this.mainCoffeeFile);
+    this.write(
+      'app/scripts/main.coffee',
+      'console.log "\'Allo from CoffeeScript!"'
+    );
+  }
+  else {
+    this.write('app/scripts/main.js', 'console.log(\'\\\'Allo \\\'Allo!\');');
+  }
+};
+
+AppGenerator.prototype.install = function () {
+  if (this.options['skip-install']) {
+    return;
   }
 
-  this.write('app/scripts/main.js', 'console.log(\'\\\'Allo \\\'Allo!\');');
-};
+  var done = this.async();
+  this.installDependencies({
+    skipMessage: this.options['skip-install-message'],
+    skipInstall: this.options['skip-install'],
+    callback: done
+  });
+}

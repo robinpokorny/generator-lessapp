@@ -1,4 +1,4 @@
-# Web app generator with LESS
+# Web app generator with LESS [![Build Status](https://secure.travis-ci.org/robinpokorny/generator-lessapp.png?branch=master)](http://travis-ci.org/robinpokorny/generator-lessapp) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
 Edited default Yeoman generator for scaffolding out a front-end web app with Twitter Bootstrap in LESS
 
@@ -21,6 +21,8 @@ For more information on what `generator-webapp` can do for you, take a look at t
 - Install: `npm install -g generator-lessapp`
 - Run: `yo lessapp`
 - Run `grunt` for building and `grunt serve` for preview
+
+Note: `grunt server` was previously used for previewing in earlier versions of the project and is being deprecated in favor of `grunt serve`.
 
 ## Options
 

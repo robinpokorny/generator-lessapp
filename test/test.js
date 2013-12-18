@@ -36,8 +36,7 @@ describe('Lessapp generator test', function () {
       'app/favicon.ico',
       'app/robots.txt',
       'app/index.html',
-      'app/scripts/hello.coffee',
-      'app/scripts/main.js',
+      'app/scripts/main.coffee',
       'app/styles/main.less'
     ];
 
