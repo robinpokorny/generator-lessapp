@@ -28,7 +28,7 @@ For more information on what `generator-webapp` can do for you, take a look at t
 
   Skips the automatic execution of `bower` and `npm` after scaffolding has finished.
 
-* `--test-framework <framework>`
+* `--test-framework=<framework>`
 
   Defaults to `mocha`. Can be switched for another supported testing framework like `jasmine`.
 
@@ -48,3 +48,5 @@ If not, `generator-webapp` is fork-friendly and you can always maintain a custom
 ## License
 
 [BSD license](http://opensource.org/licenses/bsd-license.php)
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/robinpokorny/generator-lessapp/trend.png)](https://bitdeli.com/free "Bitdeli Badge")

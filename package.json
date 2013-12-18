@@ -1,6 +1,6 @@
 {
   "name": "generator-lessapp",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Edited default Yeoman generator for scaffolding out a front-end web app with Twitter Bootstrap in LESS",
   "keywords": [
     "yeoman-generator",
@@ -23,7 +23,7 @@
     "test": "mocha --reporter spec"
   },
   "dependencies": {
-    "yeoman-generator": "~0.13.1",
+    "yeoman-generator": "~0.14.0",
     "cheerio": "~0.12.1"
   },
   "peerDependencies": {
