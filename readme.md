@@ -1,28 +1,49 @@
 # Web app generator with LESS [![Build Status](https://secure.travis-ci.org/robinpokorny/generator-lessapp.png?branch=master)](http://travis-ci.org/robinpokorny/generator-lessapp) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
-Edited default Yeoman generator for scaffolding out a front-end web app with Twitter Bootstrap in LESS
+Edited default [Yeoman](http://yeoman.io) generator for scaffolding out a front-end web app with Twitter Bootstrap in LESS
 
 ## Features
 
-* CSS Autoprefixing (new)
+* CSS Autoprefixing *(new)*
 * Built-in preview server with LiveReload
 * Automagically compile CoffeeScript & LESS
 * Automagically lint your scripts
-* Automagically wire up your Bower components with [bower-install](https://github.com/stephenplusplus/grunt-bower-install).
+* Automagically wire up your Bower components with [bower-install](#third-party-dependencies).
 * Awesome Image Optimization (via OptiPNG, pngquant, jpegtran and gifsicle)
 * Mocha Unit Testing with PhantomJS
 * Optional - Twitter Bootstrap 3 (in LESS)
-* Optional - Leaner Modernizr builds (new)
+* Optional - Leaner Modernizr builds *(new)*
 
 For more information on what `generator-webapp` can do for you, take a look at the [Grunt tasks](https://github.com/yeoman/generator-webapp/blob/master/app/templates/_package.json) used in our `package.json`.
+
 
 ## Getting Started
 
 - Install: `npm install -g generator-lessapp`
 - Run: `yo lessapp`
-- Run `grunt` for building and `grunt serve` for preview
+- Run `grunt` for building and `grunt serve` for preview [*](#serve-note)
+
+
+#### Third-Party Dependencies
+
+*(HTML/CSS/JS/Images/etc)*
+
+Third-party dependencies are managed with [bower-install](https://github.com/stephenplusplus/grunt-bower-install). Add new dependencies using **Bower** and then run the **Grunt** task to load them:
+
+```bash
+  bower install --save jquery
+  grunt bower-install
+```
+
+This works if the package author has followed the [Bower spec](https://github.com/bower/bower.json-spec). If the files are not automatically added to your index.html, check with the package's repo for support and/or file an issue with them to have it updated.
+
+To manually add dependencies, `bower install depName --save` to get the files, then add a `script` or `style` tag to your `index.html` or an other appropriate place.
+
+
+#### Grunt Serve Note
 
 Note: `grunt server` was previously used for previewing in earlier versions of the project and is being deprecated in favor of `grunt serve`.
+
 
 ## Options
 
@@ -38,14 +59,12 @@ Note: `grunt server` was previously used for previewing in earlier versions of t
 
   Add support for [CoffeeScript](http://coffeescript.org/).
 
+
 ## Contribute
 
 See the [contributing docs](https://github.com/yeoman/yeoman/blob/master/contributing.md)
 
 Note: We are regularly asked whether we can add or take away features. If a change is good enough to have a positive impact on all users, we are happy to consider it.
-
-If not, `generator-webapp` is fork-friendly and you can always maintain a custom version which you `npm install && npm link` to continue using via `yo webapp` or a name of your choosing.
-
 
 ## License
 

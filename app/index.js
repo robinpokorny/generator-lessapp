@@ -48,8 +48,12 @@ AppGenerator.prototype.askFor = function askFor() {
     name: 'features',
     message: 'What more would you like?',
     choices: [{
-      name: 'Bootstrap with LESS',
-      value: 'lessBootstrap',
+      name: 'LESS',
+      value: 'includeLess',
+      checked: true
+    }, {
+      name: 'Bootstrap',
+      value: 'includeBootstrap',
       checked: true
     }, {
       name: 'Modernizr',
@@ -65,7 +69,8 @@ AppGenerator.prototype.askFor = function askFor() {
 
     // manually deal with the response, get back and store the results.
     // we change a bit this way of doing to automatically do this in the self.prompt() method.
-    this.lessBootstrap = hasFeature('lessBootstrap');
+    this.includeLess = hasFeature('includeLess');
+    this.includeBootstrap = hasFeature('includeBootstrap');
     this.includeModernizr = hasFeature('includeModernizr');
 
     cb();
@@ -106,22 +111,18 @@ AppGenerator.prototype.h5bp = function h5bp() {
 };
 
 AppGenerator.prototype.mainStylesheet = function mainStylesheet() {
-  var css = 'main.' + (this.lessBootstrap ? 'le' : 'c') + 'ss';
+  var css = 'main.' + (this.includeLess ? 'le' : 'c') + 'ss';
   this.copy(css, 'app/styles/' + css);
 };
 
 AppGenerator.prototype.writeIndex = function writeIndex() {
-  var bs;
 
   this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), 'index.html'));
   this.indexFile = this.engine(this.indexFile, this);
-  this.indexFile = this.appendScripts(this.indexFile, 'scripts/main.js', [
-    'scripts/main.js'
-  ]);
 
-  if (this.lessBootstrap) {
-    // wire Twitter Bootstrap plugins
-    bs = 'bower_components/bootstrap/js/';
+  // wire Twitter Bootstrap plugins
+  if (this.includeBootstrap) {
+    var bs = 'bower_components/bootstrap/js/';
     this.indexFile = this.appendScripts(this.indexFile, 'scripts/plugins.js', [
       bs + 'affix.js',
       bs + 'alert.js',
@@ -137,6 +138,14 @@ AppGenerator.prototype.writeIndex = function writeIndex() {
       bs + 'tab.js'
     ]);
   }
+
+  this.indexFile = this.appendFiles({
+    html: this.indexFile,
+    fileType: 'js',
+    optimizedPath: 'scripts/main.js',
+    sourceFileList: ['scripts/main.js'],
+    searchPath: '{app,.tmp}'
+  });
 };
 
 AppGenerator.prototype.app = function app() {
@@ -168,4 +177,4 @@ AppGenerator.prototype.install = function () {
     skipInstall: this.options['skip-install'],
     callback: done
   });
-}
+};

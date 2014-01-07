@@ -48,11 +48,11 @@ module.exports = function (grunt) {
             },<% } %>
             gruntfile: {
                 files: ['Gruntfile.js']
-            },
+            },<% if (includeLess) { %>
             less: {
                 files: ['<%%= yeoman.app %>/styles/{,*/}*.less'],
                 tasks: ['less:server', 'autoprefixer']
-            },
+            },<% } %>
             styles: {
                 files: ['<%%= yeoman.app %>/styles/{,*/}*.css'],
                 tasks: ['newer:copy:styles', 'autoprefixer']
@@ -176,6 +176,7 @@ module.exports = function (grunt) {
                 }]
             }
         },<% } %>
+<% if (includeLess) { %>
         // Compiles LESS to CSS and generates necessary files if requested
         less: {
             options: {
@@ -200,7 +201,7 @@ module.exports = function (grunt) {
                     '.tmp/styles/main.css': '<%%= yeoman.app %>/styles/main.less'
                 }
             }
-        },
+        },<% } %>
 
         // Add vendor prefixed styles
         autoprefixer: {
@@ -339,7 +340,7 @@ module.exports = function (grunt) {
                         '.htaccess',
                         'images/{,*/}*.webp',
                         '{,*/}*.html',
-                        'styles/fonts/{,*/}*.*'<% if (lessBootstrap) { %>,
+                        'styles/fonts/{,*/}*.*'<% if (includeBootstrap) { %>,
                         'bower_components/bootstrap/fonts/*.*'<% } %>
                     ]
                 }]
@@ -369,8 +370,8 @@ module.exports = function (grunt) {
 
         // Run some tasks in parallel to speed up build process
         concurrent: {
-            server: [
-                'less:server',<% if (coffee) { %>
+            server: [<% if (includeLess) { %>
+                'less:server',<% } if (coffee) { %>
                 'coffee:dist',<% } %>
                 'copy:styles'
             ],
@@ -379,8 +380,8 @@ module.exports = function (grunt) {
                 'copy:styles'
             ],
             dist: [<% if (coffee) { %>
-                'coffee',<% } %>
-                'less:dist',
+                'coffee',<% } if (includeLess) { %> 
+                'less:dist',<% } %>
                 'copy:styles',
                 'imagemin',
                 'svgmin'

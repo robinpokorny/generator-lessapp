@@ -41,7 +41,7 @@ describe('Lessapp generator test', function () {
     ];
 
     helpers.mockPrompt(this.lessapp, {
-      features: ['lessBootstrap']
+      features: ['includeLess']
     });
 
     this.lessapp.coffee = true;
@@ -66,7 +66,7 @@ describe('Lessapp generator test', function () {
     ];
 
     helpers.mockPrompt(this.lessapp, {
-      features: ['lessBootstrap']
+      features: ['includeLess']
     });
 
     this.lessapp.coffee = false;
@@ -91,7 +91,7 @@ describe('Lessapp generator test', function () {
     ];
 
     helpers.mockPrompt(this.lessapp, {
-      features: ['lessBootstrap']
+      features: ['includeLess']
     });
 
     this.lessapp.options['skip-install'] = true;

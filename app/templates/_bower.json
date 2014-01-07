@@ -1,8 +1,8 @@
 {
   "name": "<%= _.slugify(appname) %>",
   "private": true,
-  "dependencies": {<% if (lessBootstrap) { %>
-    "bootstrap": "~3.0.0",<% } %><% if (includeModernizr) { %>
+  "dependencies": {<% if (includeBootstrap) { %>
+    "bootstrap": "~3.0.3",<% } if (includeModernizr) { %>
     "modernizr": "~2.6.2",<% } %>
     "jquery": "~1.10.2"
   },
