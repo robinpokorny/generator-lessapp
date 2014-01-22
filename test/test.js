@@ -2,8 +2,6 @@
 
 var path    = require('path');
 var helpers = require('yeoman-generator').test;
-var assert  = require('assert');
-
 
 describe('Lessapp generator test', function () {
   beforeEach(function (done) {
@@ -18,6 +16,8 @@ describe('Lessapp generator test', function () {
           'mocha:app'
         ]
       ]);
+      this.lessapp.options['skip-install'] = true;
+
       done();
     }.bind(this));
   });
@@ -45,7 +45,6 @@ describe('Lessapp generator test', function () {
     });
 
     this.lessapp.coffee = true;
-    this.lessapp.options['skip-install'] = true;
     this.lessapp.run({}, function () {
       helpers.assertFiles(expected);
       done();
@@ -70,7 +69,6 @@ describe('Lessapp generator test', function () {
     });
 
     this.lessapp.coffee = false;
-    this.lessapp.options['skip-install'] = true;
     this.lessapp.run({}, function () {
       helpers.assertFiles(expected);
       done();
@@ -78,7 +76,7 @@ describe('Lessapp generator test', function () {
   });
 
   it('creates expected files in AMD mode', function (done) {
-    var expected= [
+    var expected = [
       ['bower.json', /"name": "temp"/],
       ['package.json', /"name": "temp"/],
       'Gruntfile.js',
@@ -94,7 +92,6 @@ describe('Lessapp generator test', function () {
       features: ['includeLess']
     });
 
-    this.lessapp.options['skip-install'] = true;
     this.lessapp.run({}, function () {
       helpers.assertFiles(expected);
       done();
