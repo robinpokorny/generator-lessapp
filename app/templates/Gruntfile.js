@@ -359,7 +359,7 @@ module.exports = function (grunt) {
         // reference in your app
         modernizr: {
             devFile: '<%%= yeoman.app %>/bower_components/modernizr/modernizr.js',
-            outputFile: '<%%= yeoman.dist %>/bower_components/modernizr/modernizr.js',
+            outputFile: '<%%= yeoman.dist %>/scripts/vendor/modernizr.js',
             files: [
                 '<%%= yeoman.dist %>/scripts/{,*/}*.js',
                 '<%%= yeoman.dist %>/styles/{,*/}*.css',
@@ -406,21 +406,15 @@ module.exports = function (grunt) {
 
     grunt.registerTask('server', function (target) {
         grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-
-        if (target) {
-            grunt.task.run(['serve:' + target]);
-        }
-        else {
-            grunt.task.run(['serve']);
-        }
+        grunt.task.run([target ? ('serve:' + target) : 'serve']);
     });
 
-    grunt.registerTask('test', function(target) {
+    grunt.registerTask('test', function (target) {
         if (target !== 'watch') {
             grunt.task.run([
                 'clean:server',
                 'concurrent:test',
-                'autoprefixer',
+                'autoprefixer'
             ]);
         }
 
