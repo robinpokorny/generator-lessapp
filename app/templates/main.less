@@ -1,4 +1,7 @@
-<% if (includeBootstrap) { %>@import 'bootstrap/less/bootstrap';
+<% if (includeBootstrap) { %>
+// bower:less
+@import 'bootstrap/less/bootstrap';
+// endbower
 
 .browsehappy {
     margin: 0.2em 0;
@@ -81,12 +84,15 @@ body {
     .header {
         margin-bottom: 30px;
     }
-    
+
     /* Remove the bottom border on the jumbotron for visual effect */
     .jumbotron {
         border-bottom: 0;
     }
-}<% } else { %>body {
+}<% } else { %>// bower:less
+// endbower
+
+body {
     background: #fafafa;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #333;

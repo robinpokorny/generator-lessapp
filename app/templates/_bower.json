@@ -4,7 +4,7 @@
   "dependencies": {<% if (includeBootstrap) { %>
     "bootstrap": "~3.0.3",<% } if (includeModernizr) { %>
     "modernizr": "~2.6.2",<% } %>
-    "jquery": "~1.10.2"
+    "jquery": "~1.11.0"
   },
   "devDependencies": {}
 }
