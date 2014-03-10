@@ -54,7 +54,7 @@ module.exports = function (grunt) {
                 files: ['Gruntfile.js']
             },<% if (includeLess) { %>
             less: {
-                files: ['<%%= yeoman.app %>/styles/{,*/}*.less'],
+                files: ['<%%= config.app %>/styles/{,*/}*.less'],
                 tasks: ['less:server', 'autoprefixer']
             },<% } %>
             styles: {
@@ -183,7 +183,7 @@ module.exports = function (grunt) {
     // Compiles LESS to CSS and generates necessary files if requested
         less: {
             options: {
-                paths: ['<%%= yeoman.app %>/bower_components'],
+                paths: ['<%%= config.app %>/bower_components'],
             },
             dist: {
                 options: {
@@ -191,17 +191,17 @@ module.exports = function (grunt) {
                     report: 'gzip'
                 },
                 files: {
-                    '.tmp/styles/main.css': '<%%= yeoman.app %>/styles/main.less'
+                    '.tmp/styles/main.css': '<%%= config.app %>/styles/main.less'
                 }
             },
             server: {
                 options: {
                     sourceMap: true,
-                    sourceMapBasepath: '<%%= yeoman.app %>/',
+                    sourceMapBasepath: '<%%= config.app %>/',
                     sourceMapRootpath: '../'
                 },
                 files: {
-                    '.tmp/styles/main.css': '<%%= yeoman.app %>/styles/main.less'
+                    '.tmp/styles/main.css': '<%%= config.app %>/styles/main.less'
                 }
             }
         },<% } %>
