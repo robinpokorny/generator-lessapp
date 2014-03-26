@@ -14,7 +14,7 @@ Edited default [Yeoman](http://yeoman.io) generator for scaffolding out a front-
 * Optional - Twitter Bootstrap 3 (in LESS)
 * Optional - Leaner Modernizr builds *(new)*
 
-For more information on what `generator-webapp` can do for you, take a look at the [Grunt tasks](https://github.com/yeoman/generator-webapp/blob/master/app/templates/_package.json) used in our `package.json`.
+For more information on what `generator-lessapp` can do for you, take a look at the [Grunt tasks](https://github.com/robinpokorny/generator-lessapp/blob/master/app/templates/_package.json) used in our `package.json`.
 
 
 ## Getting Started
@@ -32,12 +32,16 @@ Third-party dependencies are managed with [bower-install](https://github.com/ste
 
 ```bash
   bower install --save jquery
-  grunt bower-install
+  grunt bowerInstall
 ```
 
 This works if the package author has followed the [Bower spec](https://github.com/bower/bower.json-spec). If the files are not automatically added to your index.html, check with the package's repo for support and/or file an issue with them to have it updated.
 
 To manually add dependencies, `bower install depName --save` to get the files, then add a `script` or `style` tag to your `index.html` or an other appropriate place.
+
+The components are installed in the root of the project at `/bower_components`. To reference them from the `grunt serve` web app `index.html` file, use `src="bower_components"` or `src="/bower_components"`. Treat the references as if they were a sibling to `index.html`.
+
+*Testing Note*: a project checked into source control and later checked out, needs to have `bower install` run from the `test` folder as well as from project root.
 
 
 #### Grunt Serve Note
