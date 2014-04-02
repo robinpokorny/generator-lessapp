@@ -233,7 +233,6 @@ module.exports = function (grunt) {
         bowerInstall: {
             app: {
                 src: ['<%%= config.app %>/index.html'],
-
                 ignorePath: '<%%= config.app %>/'<% if (includeLess) { %>,
                 exclude: ['bower_components/bootstrap/dist/js/bootstrap.js']
             },
@@ -404,7 +403,7 @@ module.exports = function (grunt) {
                 'copy:styles'
             ],
             dist: [<% if (coffee) { %>
-                'coffee',<% } if (includeLess) { %> 
+                'coffee',<% } if (includeLess) { %>
                 'less:dist',<% } %>
                 'copy:styles',
                 'imagemin',

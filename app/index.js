@@ -21,8 +21,8 @@ var AppGenerator = module.exports = function Appgenerator(args, options, config)
     as: 'app',
     options: {
       options: {
-        'skip-install': options['skip-install-message'],
-        'skip-message': options['skip-install']
+        'skip-message': options['skip-install-message'],
+        'skip-install': options['skip-install']
       }
     }
   });
@@ -60,18 +60,29 @@ AppGenerator.prototype.askFor = function askFor() {
       value: 'includeModernizr',
       checked: false
     }]
+  }, {
+    when: function (answers) {
+      return answers.features.indexOf('includeSass') !== -1;
+    },
+    type: 'confirm',
+    name: 'libsass',
+    value: 'includeLibSass',
+    message: 'Would you like to use libsass? Read up more at \n' + chalk.green('https://github.com/yeoman/generator-webapp/blob/master/libsass.md'),
+    default: false
   }];
 
   this.prompt(prompts, function (answers) {
     var features = answers.features;
 
     function hasFeature(feat) { return features.indexOf(feat) !== -1; }
-
     // manually deal with the response, get back and store the results.
     // we change a bit this way of doing to automatically do this in the self.prompt() method.
     this.includeLess = hasFeature('includeLess');
     this.includeBootstrap = hasFeature('includeBootstrap');
     this.includeModernizr = hasFeature('includeModernizr');
+
+    this.includeLibSass = answers.libsass;
+    this.includeRubySass = !(answers.libsass);
 
     cb();
   }.bind(this));
