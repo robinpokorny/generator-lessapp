@@ -191,16 +191,20 @@ module.exports = function (grunt) {
     // Compiles LESS to CSS and generates necessary files if requested
         less: {
             options: {
-                paths: ['./bower_components'],
+                paths: ['<%%= config.app %>/bower_components'],
             },
             dist: {
                 options: {
                     cleancss: true,
                     report: 'gzip'
                 },
-                files: {
-                    '.tmp/styles/main.css': '<%%= config.app %>/styles/main.less'
-                }
+                files: [{
+                    expand: true,
+                    cwd: '<%%= config.app %>/styles',
+                    src: '{,*/}*.less',
+                    dest: '.tmp/styles',
+                    ext: '.css'
+                }]
             },
             server: {
                 options: {
@@ -208,9 +212,13 @@ module.exports = function (grunt) {
                     sourceMapBasepath: '<%%= config.app %>/',
                     sourceMapRootpath: '../'
                 },
-                files: {
-                    '.tmp/styles/main.css': '<%%= config.app %>/styles/main.less'
-                }
+                files: [{
+                    expand: true,
+                    cwd: '<%%= config.app %>/styles',
+                    src: '{,*/}*.less',
+                    dest: '.tmp/styles',
+                    ext: '.css'
+                }]
             }
         },<% } %>
 
