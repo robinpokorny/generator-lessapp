@@ -1,19 +1,20 @@
-// Generated on <%= (new Date).toISOString().split('T')[0] %> using <%= pkg.name %> <%= pkg.version %>
+// Generated on <%= (new Date).toISOString().split('T')[0] %> using
+// <%= pkg.name %> <%= pkg.version %>
 'use strict';
 
 // # Globbing
 // for performance reasons we're only matching one level down:
 // 'test/spec/{,*/}*.js'
-// use this if you want to recursively match all subfolders:
+// If you want to recursively match all subfolders, use:
 // 'test/spec/**/*.js'
 
 module.exports = function (grunt) {
 
-    // Load grunt tasks automatically
-    require('load-grunt-tasks')(grunt);
-
     // Time how long tasks take. Can help when optimizing build times
     require('time-grunt')(grunt);
+
+    // Load grunt tasks automatically
+    require('load-grunt-tasks')(grunt);
 
     // Configurable paths
     var config = {
@@ -186,9 +187,8 @@ module.exports = function (grunt) {
                     ext: '.js'
                 }]
             }
-        },<% } %>
-    <% if (includeLess) { %>
-    // Compiles LESS to CSS and generates necessary files if requested
+        },<% } %><% if (includeLess) { %>
+        // Compiles LESS to CSS and generates necessary files if requested
         less: {
             options: {
                 paths: ['./bower_components'],
@@ -201,7 +201,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: '<%%= config.app %>/styles',
-                    src: '{,*/}*.less',
+                    src: '*.less',
                     dest: '.tmp/styles',
                     ext: '.css'
                 }]
@@ -215,7 +215,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: '<%%= config.app %>/styles',
-                    src: '{,*/}*.less',
+                    src: '*.less',
                     dest: '.tmp/styles',
                     ext: '.css'
                 }]
@@ -240,13 +240,11 @@ module.exports = function (grunt) {
         // Automatically inject Bower components into the HTML file
         bowerInstall: {
             app: {
-                src: ['<%%= config.app %>/index.html'],
-                ignorePath: '<%%= config.app %>/'<% if (includeLess) { %>,
-                exclude: ['bower_components/bootstrap/dist/js/bootstrap.js']
-            },
+                src: ['<%%= config.app %>/index.html']<% if (includeBootstrap) { %>,
+                exclude: ['bower_components/bootstrap/dist/js/bootstrap.js']<% } %>
+            }<% if (includeLess) { %>,
             less: {
-                src: ['<%%= config.app %>/styles/{,*/}*.less'],
-                ignorePath: '<%%= config.app %>/bower_components/'
+                src: ['<%%= config.app %>/styles/{,*/}*.less']
             }<% } %>
         },
 
@@ -328,9 +326,9 @@ module.exports = function (grunt) {
             }
         },
 
-        // By default, your `index.html`'s <!-- Usemin block --> will take care of
-        // minification. These next options are pre-configured if you do not wish
-        // to use the Usemin blocks.
+        // By default, your `index.html`'s <!-- Usemin block --> will take care
+        // of minification. These next options are pre-configured if you do not
+        // wish to use the Usemin blocks.
         // cssmin: {
         //     dist: {
         //         files: {
@@ -372,9 +370,9 @@ module.exports = function (grunt) {
                 }<% if (includeBootstrap) { %>, {
                     expand: true,
                     dot: true,
-                    cwd: 'bower_components/bootstrap/dist',
-                    src: ['fonts/*.*'],
-                    dest: '<%%= config.dist %>'
+                    cwd: 'bower_components/bootstrap/dist/fonts/',
+                    src: ['*.*'],
+                    dest: '<%%= config.dist %>/styles/fonts'
                 }<% } %>]
             },
             styles: {
@@ -389,14 +387,18 @@ module.exports = function (grunt) {
         // Generates a custom Modernizr build that includes only the tests you
         // reference in your app
         modernizr: {
-            devFile: 'bower_components/modernizr/modernizr.js',
-            outputFile: '<%%= config.dist %>/scripts/vendor/modernizr.js',
-            files: [
-                '<%%= config.dist %>/scripts/{,*/}*.js',
-                '<%%= config.dist %>/styles/{,*/}*.css',
-                '!<%%= config.dist %>/scripts/vendor/*'
-            ],
-            uglify: true
+            dist: {
+                devFile: 'bower_components/modernizr/modernizr.js',
+                outputFile: '<%%= config.dist %>/scripts/vendor/modernizr.js',
+                files: {
+                    src: [
+                        '<%%= config.dist %>/scripts/{,*/}*.js',
+                        '<%%= config.dist %>/styles/{,*/}*.css',
+                        '!<%%= config.dist %>/scripts/vendor/*'
+                    ]
+                },
+                uglify: true
+            }
         },<% } %>
 
         // Run some tasks in parallel to speed up build process
