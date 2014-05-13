@@ -91,7 +91,8 @@ module.exports = function (grunt) {
                     middleware: function(connect) {
                         return [
                             connect.static('.tmp'),
-                            connect().use('/bower_components', connect.static('./bower_components')),
+                            connect().use('/bower_components', connect.static('./bower_components')),<% if (includeBootstrap) { %>
+                            connect().use('/fonts', connect.static('<%%= config.app %>/bower_components/bootstrap/dist/fonts')),<% } %>
                             connect.static(config.app)
                         ];
                     }
@@ -105,7 +106,8 @@ module.exports = function (grunt) {
                         return [
                             connect.static('.tmp'),
                             connect.static('test'),
-                            connect().use('/bower_components', connect.static('./bower_components')),
+                            connect().use('/bower_components', connect.static('./bower_components')),<% if (includeBootstrap) { %>
+                            connect().use('/fonts', connect.static('<%%= config.app %>/bower_components/bootstrap/dist/fonts')),<% } %>
                             connect.static(config.app)
                         ];
                     }
@@ -191,7 +193,7 @@ module.exports = function (grunt) {
         // Compiles LESS to CSS and generates necessary files if requested
         less: {
             options: {
-                paths: ['./bower_components'],
+                paths: ['<%= config.app %>/bower_components'],
             },
             dist: {
                 options: {
@@ -370,7 +372,7 @@ module.exports = function (grunt) {
                 }<% if (includeBootstrap) { %>, {
                     expand: true,
                     dot: true,
-                    cwd: 'bower_components/bootstrap/dist/fonts/',
+                    cwd: '<%%= config.app %>/bower_components/bootstrap/dist/fonts/',
                     src: ['*.*'],
                     dest: '<%%= config.dist %>/styles/fonts'
                 }<% } %>]
@@ -388,7 +390,7 @@ module.exports = function (grunt) {
         // reference in your app
         modernizr: {
             dist: {
-                devFile: 'bower_components/modernizr/modernizr.js',
+                devFile: '<%%= config.app %>/bower_components/modernizr/modernizr.js',
                 outputFile: '<%%= config.dist %>/scripts/vendor/modernizr.js',
                 files: {
                     src: [
