@@ -193,7 +193,7 @@ module.exports = function (grunt) {
         // Compiles LESS to CSS and generates necessary files if requested
         less: {
             options: {
-                paths: ['<%= config.app %>/bower_components'],
+                paths: ['<%%= config.app %>/bower_components'],
             },
             dist: {
                 options: {

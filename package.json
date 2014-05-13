@@ -1,6 +1,6 @@
 {
   "name": "generator-lessapp",
-  "version": "0.4.12",
+  "version": "0.4.13",
   "description": "Scaffold out a LESS front-end web app",
   "license": "BSD",
   "repository": "robinpokorny/generator-lessapp",
