@@ -1,187 +1,199 @@
 'use strict';
-var util = require('util');
-var path = require('path');
-var spawn = require('child_process').spawn;
+
+var join = require('path').join;
 var yeoman = require('yeoman-generator');
-var yosay = require('yosay');
 var chalk = require('chalk');
 
+module.exports = yeoman.generators.Base.extend({
+  constructor: function () {
+    yeoman.generators.Base.apply(this, arguments);
 
-var AppGenerator = module.exports = function Appgenerator(args, options) {
-  yeoman.generators.Base.apply(this, arguments);
+    // setup the test-framework property, Gruntfile template will need this
+    this.option('test-framework', {
+      desc: 'Test framework to be invoked',
+      type: String,
+      defaults: 'mocha'
+    });
+    this.testFramework = this.options['test-framework'];
 
-  // setup the test-framework property, Gruntfile template will need this
-  this.testFramework = options['test-framework'] || 'mocha';
-  this.coffee = options.coffee;
+    this.option('coffee', {
+      desc: 'Use CoffeeScript',
+      type: Boolean,
+      defaults: false
+    });
+    this.coffee = this.options.coffee;
 
-  // for hooks to resolve on mocha by default
-  options['test-framework'] = this.testFramework;
+    this.pkg = require('../package.json');
+  },
 
-  // resolved to mocha by default (could be switched to jasmine for instance)
-  this.hookFor('test-framework', {
-    as: 'app',
-    options: {
-      options: {
-        'skip-message': options['skip-install-message'],
-        'skip-install': options['skip-install']
+  askFor: function () {
+    var done = this.async();
+
+    // welcome message
+    if (!this.options['skip-welcome-message']) {
+      this.log(require('yosay')());
+      this.log(chalk.magenta(
+        'Out of the box I include HTML5 Boilerplate, jQuery, and a ' +
+        'Gruntfile.js to build your app.'
+      ));
+    }
+
+    var prompts = [{
+      type: 'checkbox',
+      name: 'features',
+      message: 'What more would you like?',
+      choices: [{
+        name: 'Bootstrap',
+        value: 'includeBootstrap',
+        checked: true
+      },{
+        name: 'Less',
+        value: 'includeLess',
+        checked: false
+      },{
+        name: 'Modernizr',
+        value: 'includeModernizr',
+        checked: false
+      }]
+    }];
+
+    this.prompt(prompts, function (answers) {
+      var features = answers.features;
+
+      function hasFeature(feat) {
+        return features && features.indexOf(feat) !== -1;
       }
-    }
-  });
 
-  this.options = options;
+      this.includeLess = hasFeature('includeLess');
+      this.includeBootstrap = hasFeature('includeBootstrap');
+      this.includeModernizr = hasFeature('includeModernizr');
 
-  this.pkg = JSON.parse(this.readFileAsString(
-    path.join(__dirname, '../package.json')
-  ));
-};
+      done();
+    }.bind(this));
+  },
 
-util.inherits(AppGenerator, yeoman.generators.Base);
+  gruntfile: function () {
+    this.template('Gruntfile.js');
+  },
 
-AppGenerator.prototype.askFor = function askFor() {
-  var cb = this.async();
+  packageJSON: function () {
+    this.template('_package.json', 'package.json');
+  },
 
-  // welcome message
-  if (!this.options['skip-welcome-message']) {
-    this.log(yosay());
-    this.log(chalk.magenta(
-      'Out of the box I include HTML5 Boilerplate, jQuery, and a ' +
-      'Gruntfile.js to build your app.'
-    ));
-  }
+  git: function () {
+    this.template('gitignore', '.gitignore');
+    this.copy('gitattributes', '.gitattributes');
+  },
 
-  var prompts = [{
-    type: 'checkbox',
-    name: 'features',
-    message: 'What more would you like?',
-    choices: [{
-      name: 'Bootstrap',
-      value: 'includeBootstrap',
-      checked: true
-    },{
-      name: 'LESS',
-      value: 'includeLess',
-      checked: true
-    },{
-      name: 'Modernizr',
-      value: 'includeModernizr',
-      checked: false
-    }]
-  }];
+  bower: function () {
+    var bower = {
+      name: this._.slugify(this.appname),
+      private: true,
+      dependencies: {}
+    };
 
-  this.prompt(prompts, function (answers) {
-    var features = answers.features;
-
-    function hasFeature(feat) {
-      return features.indexOf(feat) !== -1;
+    if (this.includeBootstrap) {
+      var bs = 'bootstrap';
+      bower.dependencies[bs] = "~3.2.0";
+    } else {
+      bower.dependencies.jquery = "~1.11.1";
     }
 
-    this.includeLess = hasFeature('includeLess');
-    this.includeBootstrap = hasFeature('includeBootstrap');
-    this.includeModernizr = hasFeature('includeModernizr');
+    if (this.includeModernizr) {
+      bower.dependencies.modernizr = "~2.8.2";
+    }
 
-    cb();
-  }.bind(this));
-};
+    this.write('bower.json', JSON.stringify(bower, null, 2));
+  },
 
-AppGenerator.prototype.gruntfile = function gruntfile() {
-  this.template('Gruntfile.js');
-};
+  jshint: function () {
+    this.copy('jshintrc', '.jshintrc');
+  },
 
-AppGenerator.prototype.packageJSON = function packageJSON() {
-  this.template('_package.json', 'package.json');
-};
+  editorConfig: function () {
+    this.copy('editorconfig', '.editorconfig');
+  },
 
-AppGenerator.prototype.git = function git() {
-  this.template('gitignore', '.gitignore');
-  this.copy('gitattributes', '.gitattributes');
-};
+  mainStylesheet: function () {
+    var css = 'main.' + (this.includeless ? 'le' : 'c') + 'ss';
+    this.template(css, 'app/styles/' + css);
+  },
 
-AppGenerator.prototype.bower = function bower() {
-  this.template('_bower.json', 'bower.json');
-};
-
-AppGenerator.prototype.jshint = function jshint() {
-  this.copy('jshintrc', '.jshintrc');
-};
-
-AppGenerator.prototype.editorConfig = function editorConfig() {
-  this.copy('editorconfig', '.editorconfig');
-};
-
-AppGenerator.prototype.h5bp = function h5bp() {
-  this.copy('favicon.ico', 'app/favicon.ico');
-  this.copy('404.html', 'app/404.html');
-  this.copy('robots.txt', 'app/robots.txt');
-  this.copy('htaccess', 'app/.htaccess');
-};
-
-AppGenerator.prototype.mainStylesheet = function mainStylesheet() {
-  var css = 'main.' + (this.includeLess ? 'le' : 'c') + 'ss';
-  this.copy(css, 'app/styles/' + css);
-};
-
-AppGenerator.prototype.writeIndex = function writeIndex() {
-
-  this.indexFile = this.readFileAsString(
-    path.join(this.sourceRoot(), 'index.html')
-  );
-  this.indexFile = this.engine(this.indexFile, this);
-
-  // wire Bootstrap plugins
-  if (this.includeBootstrap) {
-    var bs = '../bower_components/bootstrap/js/';
-    this.indexFile = this.appendScripts(this.indexFile, 'scripts/plugins.js', [
-      bs + 'affix.js',
-      bs + 'alert.js',
-      bs + 'dropdown.js',
-      bs + 'tooltip.js',
-      bs + 'modal.js',
-      bs + 'transition.js',
-      bs + 'button.js',
-      bs + 'popover.js',
-      bs + 'carousel.js',
-      bs + 'scrollspy.js',
-      bs + 'collapse.js',
-      bs + 'tab.js'
-    ]);
-  }
-
-  this.indexFile = this.appendFiles({
-    html: this.indexFile,
-    fileType: 'js',
-    optimizedPath: 'scripts/main.js',
-    sourceFileList: ['scripts/main.js'],
-    searchPath: '{app,.tmp}'
-  });
-};
-
-AppGenerator.prototype.app = function app() {
-  this.mkdir('app');
-  this.mkdir('app/scripts');
-  this.mkdir('app/styles');
-  this.mkdir('app/images');
-  this.write('app/index.html', this.indexFile);
-
-  if (this.coffee) {
-    this.write(
-      'app/scripts/main.coffee',
-      'console.log "\'Allo from CoffeeScript!"'
+  writeIndex: function () {
+    this.indexFile = this.engine(
+      this.readFileAsString(join(this.sourceRoot(), 'index.html')),
+      this
     );
-  }
-  else {
-    this.write('app/scripts/main.js', 'console.log(\'\\\'Allo \\\'Allo!\');');
-  }
-};
 
-AppGenerator.prototype.install = function () {
-  if (this.options['skip-install']) {
-    return;
-  }
+    // wire Bootstrap plugins
+    if (this.includeBootstrap && !this.includeLess) {
+      var bs = 'bower_components/bootstrap/js/';
 
-  var done = this.async();
-  this.installDependencies({
-    skipMessage: this.options['skip-install-message'],
-    skipInstall: this.options['skip-install'],
-    callback: done
-  });
-};
+      this.indexFile = this.appendFiles({
+        html: this.indexFile,
+        fileType: 'js',
+        optimizedPath: 'scripts/plugins.js',
+        sourceFileList: [
+          bs + 'affix.js',
+          bs + 'alert.js',
+          bs + 'dropdown.js',
+          bs + 'tooltip.js',
+          bs + 'modal.js',
+          bs + 'transition.js',
+          bs + 'button.js',
+          bs + 'popover.js',
+          bs + 'carousel.js',
+          bs + 'scrollspy.js',
+          bs + 'collapse.js',
+          bs + 'tab.js'
+        ],
+        searchPath: '.'
+      });
+    }
+
+    this.indexFile = this.appendFiles({
+      html: this.indexFile,
+      fileType: 'js',
+      optimizedPath: 'scripts/main.js',
+      sourceFileList: ['scripts/main.js'],
+      searchPath: ['app', '.tmp']
+    });
+  },
+
+  app: function () {
+    this.directory('app');
+    this.mkdir('app/scripts');
+    this.mkdir('app/styles');
+    this.mkdir('app/images');
+    this.write('app/index.html', this.indexFile);
+
+    if (this.coffee) {
+      this.write(
+        'app/scripts/main.coffee',
+        'console.log "\'Allo from CoffeeScript!"'
+      );
+    }
+    else {
+      this.write('app/scripts/main.js', 'console.log(\'\\\'Allo \\\'Allo!\');');
+    }
+  },
+
+  install: function () {
+    this.on('end', function () {
+      this.invoke(this.options['test-framework'], {
+        options: {
+          'skip-message': this.options['skip-install-message'],
+          'skip-install': this.options['skip-install'],
+          'coffee': this.options.coffee
+        }
+      });
+
+      if (!this.options['skip-install']) {
+        this.installDependencies({
+          skipMessage: this.options['skip-install-message'],
+          skipInstall: this.options['skip-install']
+        });
+      }
+    });
+  }
+});

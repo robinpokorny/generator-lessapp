@@ -1,100 +1,160 @@
 /*global describe, beforeEach, it*/
 
-var path    = require('path');
+var path = require('path');
+var assert = require('assert');
 var helpers = require('yeoman-generator').test;
+var assert = require('yeoman-generator').assert;
+var _ = require('underscore');
 
-describe('Lessapp generator test', function () {
-  beforeEach(function (done) {
-    helpers.testDirectory(path.join(__dirname, 'temp'), function (err) {
-      if (err) {
-        return done(err);
-      }
-
-      this.lessapp = helpers.createGenerator('lessapp:app', [
-        '../../app', [
-          helpers.createDummyGenerator(),
-          'mocha:app'
-        ]
-      ]);
-      this.lessapp.options['skip-install'] = true;
-
-      done();
-    }.bind(this));
-  });
-
+describe('Lessapp generator', function () {
+  // not testing the actual run of generators yet
   it('the generator can be required without throwing', function () {
-    // not testing the actual run of generators yet
     this.app = require('../app');
   });
 
-  it('creates expected files', function (done) {
-    var expected = [
-      ['bower.json', /"name": "temp"/],
-      ['package.json', /"name": "temp"/],
-      ['Gruntfile.js', /coffee:/],
-      'app/404.html',
-      'app/favicon.ico',
-      'app/robots.txt',
-      'app/index.html',
-      'app/scripts/main.coffee',
-      'app/styles/main.less'
+  describe('run test', function () {
+
+    var expectedContent = [
+      ['bower.json', /"name": "tmp"/],
+      ['package.json', /"name": "tmp"/]
     ];
-
-    helpers.mockPrompt(this.lessapp, {
-      features: ['includeLess']
-    });
-
-    this.lessapp.coffee = true;
-    this.lessapp.run({}, function () {
-      helpers.assertFiles(expected);
-      done();
-    });
-  });
-
-  it('creates expected files in non-AMD non-coffee mode', function (done) {
     var expected = [
-      ['bower.json', /"name": "temp"/],
-      ['package.json', /"name": "temp"/],
+      '.editorconfig',
+      '.gitignore',
+      '.gitattributes',
+      'package.json',
+      'bower.json',
       'Gruntfile.js',
-      'app/404.html',
       'app/favicon.ico',
       'app/robots.txt',
-      'app/index.html',
-      'app/scripts/main.js',
-      'app/styles/main.less'
+      'app/index.html'
     ];
 
-    helpers.mockPrompt(this.lessapp, {
-      features: ['includeLess']
+    var options = {
+      'skip-install-message': true,
+      'skip-install': true,
+      'skip-welcome-message': true,
+      'skip-message': true
+    };
+
+    var runGen;
+
+    beforeEach(function () {
+      runGen = helpers
+        .run(path.join(__dirname, '../app'))
+        .inDir(path.join(__dirname, '.tmp'))
+        .withGenerators([[helpers.createDummyGenerator(), 'mocha:app']]);
     });
 
-    this.lessapp.coffee = false;
-    this.lessapp.run({}, function () {
-      helpers.assertFiles(expected);
-      done();
+    it('creates expected files', function (done) {
+      runGen.withOptions(options).on('end', function () {
+
+        assert.file([].concat(
+          expected,
+          'app/styles/main.css',
+          'app/scripts/main.js'
+        ));
+        assert.noFile([
+          'app/styles/main.scss',
+          'app/scripts/main.coffee'
+        ]);
+
+        assert.fileContent(expectedContent);
+        assert.noFileContent([
+          ['Gruntfile.js', /coffee/],
+          ['Gruntfile.js', /modernizr/],
+          ['app/index.html', /modernizr/],
+          ['bower.json', /modernizr/],
+          ['package.json', /modernizr/],
+          ['Gruntfile.js', /bootstrap/],
+          ['app/index.html', /bootstrap/],
+          ['bower.json', /bootstrap/],
+          ['Gruntfile.js', /less[^a]/],
+          ['app/index.html', /LESS/],
+          ['package.json', /grunt-contrib-less/],
+          ['Gruntfile.js', /bootstrap/],
+          ['bower.json', /bootstrap/]
+        ]);
+        done();
+      });
     });
-  });
 
-  it('creates expected files in AMD mode', function (done) {
-    var expected = [
-      ['bower.json', /"name": "temp"/],
-      ['package.json', /"name": "temp"/],
-      'Gruntfile.js',
-      'app/404.html',
-      'app/favicon.ico',
-      'app/robots.txt',
-      'app/index.html',
-      'app/scripts/main.js',
-      'app/styles/main.less'
-    ];
+    it('creates expected CoffeeScript files', function (done) {
+      runGen.withOptions(
+        _.extend(options, {coffee: true})
+      ).on('end', function () {
 
-    helpers.mockPrompt(this.lessapp, {
-      features: ['includeLess']
+        assert.file([].concat(
+          expected,
+          'app/scripts/main.coffee'
+        ));
+        assert.noFile('app/scripts/main.js');
+
+        assert.fileContent([].concat(
+          expectedContent,
+          [['Gruntfile.js', /coffee/]]
+        ));
+
+        done();
+      });
     });
 
-    this.lessapp.run({}, function () {
-      helpers.assertFiles(expected);
-      done();
+    it('creates expected modernizr components', function (done) {
+      runGen.withOptions(options).withPrompt({features: ['includeModernizr']})
+      .on('end', function () {
+
+        assert.fileContent([
+          ['Gruntfile.js', /modernizr/],
+          ['app/index.html', /modernizr/],
+          ['bower.json', /modernizr/],
+          ['package.json', /modernizr/],
+        ]);
+
+        done();
+      });
+    });
+
+    it('creates expected bootstrap components', function (done) {
+      runGen.withOptions(options).withPrompt({features: ['includeBootstrap']})
+      .on('end', function () {
+
+        assert.fileContent([
+          ['Gruntfile.js', /bootstrap/],
+          ['app/index.html', /bootstrap/],
+          ['bower.json', /bootstrap/]
+        ]);
+
+        done();
+      });
+    });
+
+    it('creates expected LESS components', function (done) {
+      runGen.withOptions(options).withPrompt({features: ['includeLess']})
+      .on('end', function () {
+
+        assert.fileContent([
+          ['Gruntfile.js', /less/],
+          ['app/index.html', /LESS/],
+          ['package.json', /grunt-contrib-less/]
+        ]);
+
+        done();
+      });
+    });
+
+    it('creates expected SASS and Bootstrap components', function (done) {
+      runGen.withOptions(options).withPrompt({
+        features: ['includeLess', 'includeBootstrap']
+      }).on('end', function () {
+
+        assert.fileContent([
+          ['Gruntfile.js', /bootstrap/],
+          ['app/index.html', /LESS extends CSS/],
+          ['bower.json', /bootstrap/]
+        ]);
+
+        done();
+      });
     });
   });
 });
