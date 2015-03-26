@@ -1,5 +1,4 @@
-/*global describe, beforeEach, it*/
-
+'use strict';
 var path = require('path');
 var assert = require('assert');
 var helpers = require('yeoman-generator').test;
@@ -142,7 +141,7 @@ describe('Lessapp generator', function () {
       });
     });
 
-    it('creates expected SASS and Bootstrap components', function (done) {
+    it('creates expected LESS and Bootstrap components', function (done) {
       runGen.withOptions(options).withPrompt({
         features: ['includeLess', 'includeBootstrap']
       }).on('end', function () {

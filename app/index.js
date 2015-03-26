@@ -1,5 +1,4 @@
 'use strict';
-
 var join = require('path').join;
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
@@ -96,13 +95,14 @@ module.exports = yeoman.generators.Base.extend({
       var bs = 'bootstrap';
       bower.dependencies[bs] = "~3.2.0";
     } else {
-      bower.dependencies.jquery = "~1.11.1";
+      bower.dependencies.jquery = '~1.11.1';
     }
 
     if (this.includeModernizr) {
-      bower.dependencies.modernizr = "~2.8.2";
+      bower.dependencies.modernizr = '~2.8.2';
     }
 
+    this.copy('bowerrc', '.bowerrc');
     this.write('bower.json', JSON.stringify(bower, null, 2));
   },
 
@@ -168,13 +168,9 @@ module.exports = yeoman.generators.Base.extend({
     this.write('app/index.html', this.indexFile);
 
     if (this.coffee) {
-      this.write(
-        'app/scripts/main.coffee',
-        'console.log "\'Allo from CoffeeScript!"'
-      );
-    }
-    else {
-      this.write('app/scripts/main.js', 'console.log(\'\\\'Allo \\\'Allo!\');');
+      this.copy('main.coffee', 'app/scripts/main.coffee');
+    } else {
+      this.copy('main.js', 'app/scripts/main.js');
     }
   },
 

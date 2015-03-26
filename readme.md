@@ -21,7 +21,7 @@ For more information on what `generator-lessapp` can do for you, take a look at 
 
 - Install: `npm install -g generator-lessapp`
 - Run: `yo lessapp`
-- Run `grunt` for building and `grunt serve` for preview[\*](#serve-note). `--allow-remote` option for remote access.
+- Run `grunt` for building and `grunt serve` for preview[\*](#grunt-serve-note). `--allow-remote` option for remote access.
 
 #### Third-Party Dependencies
 
@@ -46,11 +46,6 @@ The components are installed in the root of the project at `/bower_components`. 
 #### Grunt Serve Note
 
 Note: `grunt server` was used for previewing in earlier versions of the project, and has since been deprecated in favor of `grunt serve`.
-
-
-## Docs
-
-We have [recipes](docs/recipes) for integrating other popular technologies like Compass.
 
 
 ## Options
