@@ -2,6 +2,12 @@
 
 Edited default [Yeoman](http://yeoman.io) generator for scaffolding out a front-end web app with Twitter Bootstrap in LESS
 
+# DEPRECATED
+
+This generator is now deprecated. It will not be maintained.
+
+Use new gulp-based official [generator-webapp](https://github.com/yeoman/generator-webapp), to use LESS follow [this recipe](https://github.com/yeoman/generator-webapp/blob/master/docs/recipes/less.md).
+
 ## Features
 
 * CSS Autoprefixing
